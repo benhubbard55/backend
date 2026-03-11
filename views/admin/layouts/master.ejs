@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        <%=blocks.title%> - Sails Admin
+    </title>
+    <%- include('../includes/cssfiles') %>
+
+        <!-- temporary -->
+        <%- include('../includes/jsfiles') %>
+</head>
+
+<body class="">
+    <div id="wrapper">
+        <%- include('../includes/sidenav') %>
+            <div id="page-wrapper" class="gray-bg dashbard-1">
+                <%- include('../includes/topnav') %>
+                    <%- body %>
+                        <%- include('../includes/footer') %>
+            </div>
+    </div>
+
+    <%=blocks.scripts%>
+        <script type="text/javascript">
+            function toastrDisplay(type, msg) {
+                toastr.options = {
+                    closeButton: true,
+                    progressBar: true,
+                    showMethod: "slideDown",
+                    timeOut: 7000,
+                };
+                if (type == "success") toastr.success(msg);
+                else if (type == "error") toastr.error(msg);
+            }
+
+            function deleteRecordByAjax(deleteUrl, moduleName, tableName) {
+                var deleteAlertStr = "You want to delete " + moduleName + "?";
+
+                swal({
+                    title: "Are you sure?",
+                    text: deleteAlertStr,
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, Remove it!",
+                    cancelButtonText: "No, Cancel!",
+                    showLoaderOnConfirm: true,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    preConfirm: function (email) {
+                        return new Promise(function (resolve, reject) {
+                            setTimeout(function () {
+                                jQuery.ajax({
+                                    url: deleteUrl,
+                                    type: "DELETE",
+                                    dataType: "json",
+                                    // data: {
+                                    //     "_token": window.Laravel.csrfToken
+                                    // },
+                                    success: function (result) {
+                                        swal(
+                                            "Success!",
+                                            moduleName + " Deleted successfully.",
+                                            "success"
+                                        );
+                                        toastrDisplay("success", result.message);
+                                        tableName.draw(false);
+                                    },
+                                    error: function (xhr, status, error) {
+                                        if (xhr.responseJSON && xhr.responseJSON.message != "") {
+                                            swal("ohh snap!", xhr.responseJSON.message, "error");
+                                        } else {
+                                            swal("ohh snap!", "Something went wrong", "error");
+                                        }
+                                        ajaxError(xhr, status, error);
+                                    },
+                                });
+                            }, 0);
+                        });
+                    },
+                });
+            }
+
+            function changeStatusRecordByAjax(url, moduleName, tableName) {
+                return new Promise(function (resolve, reject) {
+                    setTimeout(function () {
+                        jQuery.ajax({
+                            url: url,
+                            type: "GET",
+                            dataType: "json",
+                            // data: {
+                            //     "_token": window.Laravel.csrfToken
+                            // },
+                            success: function (result) {
+                                toastrDisplay("success", result.message);
+                                tableName.draw(false);
+                            },
+                            error: function (xhr, status, error) {
+                                if (xhr.responseJSON && xhr.responseJSON.message != "") {
+                                    toastrDisplay("success", result.message);
+                                } else {
+                                    toastrDisplay("success", result.message);
+                                }
+                                ajaxError(xhr, status, error);
+                            },
+                        });
+                    }, 0);
+                });
+            }
+
+            function ajaxError(xhr, status, error) {
+                if (xhr.status == 401) {
+                    toastrDisplay(
+                        "error",
+                        "You are not logged in. please login and try again"
+                    );
+                } else if (xhr.status == 403) {
+                    toastrDisplay("You have not permission for perform this operations");
+                } else if (xhr.responseJSON && xhr.responseJSON.message != "") {
+                    toastrDisplay("error", xhr.responseJSON.message);
+                } else {
+                    toastrDisplay(
+                        "error",
+                        "Something went wrong , Please try again later."
+                    );
+                }
+            }
+        </script>
+</body>
+
+</html>

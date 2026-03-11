@@ -1,0 +1,158 @@
+<% block('title', 'Broadcast' ); %>
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-10">
+            <h2>Broadcast</h2>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/admin/dashboard">Dashboard</a>
+                </li>
+                <li class="breadcrumb-item active">
+                    <strong>Broadcast</strong>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>Broadcast</h5>
+                        <div class="ibox-tools d-flex align-items-center gap-2 " style="gap: 10px;">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                                data-target="#broadcastModel">
+                                <i class="fa fa-plus"></i> New Broadcast
+                            </button>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="ibox-content">
+                        <div class="table-responsive">
+                            <table id="userDatatable" class="table table-striped table-bordered table-hover"
+                                style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Description</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="broadcastModel" tabindex="-1" role="dialog" aria-labelledby="broadcastModelLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="broadcastForm" method="POST" action="/admin/broadcast/create">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="broadcastModelLabel">Send Broadcast</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label">Title</label>
+                            <div class="col-sm-12">
+                                <input type="title" class="form-control" name="title" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label">Description</label>
+                            <div class="col-sm-12">
+                                <input type="description" class="form-control" name="description" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <% if(req.session.flash) { %>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                toastrDisplay("<%= req.session.flash.type %>", "<%= req.session.flash.message %>");
+            });
+        </script>
+        <% req.session.flash={}; %>
+            <% }%>
+
+                <script type="text/javascript">
+                    $(document).ready(function () {
+                        var userTable = $("#userDatatable").DataTable({
+                            processing: true,
+                            serverSide: true,
+                            responsive: true,
+                            ajax: "/admin/broadcast/index",
+                            columns: [
+                                {
+                                    data: "title",
+                                    name: "title",
+                                    searchable: true,
+                                    defaultContent: "<i>Not Set</i>",
+                                },
+                                {
+                                    data: "description",
+                                    name: "description",
+                                    searchable: false,
+                                    defaultContent: "<i>Not Set</i>",
+                                },
+                                {
+                                    data: null,
+                                    name: "Action",
+                                    sortable: false,
+                                    searchable: false,
+                                    render: function (data) {
+                                        return (
+                                            "<a href='javascript:void(0)' id=" +
+                                            data.id +
+                                            " class='broadcast_remove btn btn-danger btn-sm'><i class='fa fa-trash'></i></a>"
+                                        );
+                                    },
+                                },
+                            ],
+                        });
+
+                        $(document).on("click", ".broadcast_remove", function () {
+                            var id = $(this).attr("id");
+                            var url = "/admin/broadcast/" + id;
+                            deleteRecordByAjax(url, "broadcast", userTable);
+                        });
+
+                        $('#broadcastModel').on('shown.bs.modal', function () {
+                            $('#broadcastForm')[0].reset();
+                            let validator = $("#broadcastForm").validate();
+                            validator.resetForm();
+                        })
+
+                        var validator = $("#broadcastForm").validate({
+                            rules: {
+                                title: {
+                                    required: true,
+                                },
+                                description: {
+                                    required: true,
+                                },
+                            },
+                            messages: {
+                                title: { required: "Title is required" },
+                                description: { required: "description is required" },
+                            },
+                        });
+                    });
+                </script>

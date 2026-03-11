@@ -1,0 +1,58 @@
+<% if (policyRecord && policyRecord.id) { %>
+    <form id="policyForm" method="POST" action="/admin/policy/update/<%= policyRecord.id %>">
+        <% } else { %>
+            <form id="policyForm" method="POST" action="/admin/policy/create" enctype="multipart/form-data">
+                <% } %>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Description</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" name="description" rows="4"
+                                cols="50"><% if (policyRecord.description) { %><%= policyRecord.description %><% } %></textarea>
+                        </div>
+                    </div>
+
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group row">
+                        <div class="col-sm-4 col-sm-offset-2">
+                            <a href="/admin/policy" class="btn btn-white btn-sm">Cancel</a>
+                            <button class="btn btn-primary btn-sm" type="submit">Save changes</button>
+                        </div>
+                    </div>
+            </form>
+            <% if(req.session.flash) { %>
+                <script type="text/javascript">
+                    $(document).ready(function () {
+                        toastrDisplay("<%= req.session.flash.type %>", "<%= req.session.flash.message %>");
+                    });
+                </script>
+                <% req.session.flash={}; %>
+                    <% }%>
+                        <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+                        <script>
+                            CKEDITOR.replace('description', {
+                                removeButtons: '',
+                                // extraPlugins: 'colorbutton,colordialog,justify,showblocks,font',                                                              
+                                entities: false,  // Prevents CKEditor from converting tags into HTML entities
+                                basicEntities: false, // Prevents conversion of special characters like `<`, `>`
+                                allowedContent: true, // Allows all HTML content without filtering
+                                extraAllowedContent: '*[*]{*}(*);', // Allows inline styles and attributes                                                                
+                                enterMode: CKEDITOR.ENTER_BR,  // Pressing Enter adds `<br>` instead of `<p>`
+                                shiftEnterMode: CKEDITOR.ENTER_P, // Shift+Enter adds `<p>`
+                                autoParagraph: false
+                            });
+                        </script>
+
+                        <script>
+                            $(document).ready(function () {
+                                var validator = $("#policyForm").validate({
+                                    rules: {
+                                        description: { required: true },
+                                    },
+                                    messages: {
+                                        description: { required: "Description is required" }
+                                    },
+                                });
+                            });
+                        </script>
+    </form>

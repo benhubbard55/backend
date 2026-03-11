@@ -1,0 +1,106 @@
+<html>
+
+<head>
+    <title>Socket.IO chat</title>
+</head>
+
+<script type="text/javascript" src="/admin/vendor/sails.io.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+
+<script type="text/javascript">
+    io.sails.url = "http://localhost:1337";
+    io.socket.on("connect", function onConnect() {
+        console.log("This socket is now connected to the Sails server.");
+    });
+
+    io.sails.headers = {
+        Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE1OTU3NTM5LCJleHAiOjE3NDc0OTM1Mzl9.g5gMgDpdOV272e_sMs1bQQGmzvKtwUyEP4igw-hLh6k",
+        "x-token": "3db2abf3-d36f-46d5-a172-c0de32724f94",
+    };
+
+    var urlParams = new URLSearchParams(window.location.search);
+    var userId = urlParams.get("userId");
+    var groupId = urlParams.get("groupId");
+
+    io.socket.request(
+        {
+            method: "get",
+            url: "/api/v1/all-user/chat/test/subscribe-user/" + userId,
+            headers: {
+                Authorization:
+                    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTksImlhdCI6MTcyNzg1MTU1NiwiZXhwIjoxNzU5Mzg3NTU2fQ.PRoqyqm5Gjwv2r1zoReDdMDaYFP0oWa3oOOZkNJFVsA",
+                "x-token": "3db2abf3-d36f-46d5-a172-c0de32724f94",
+            },
+        },
+        function (resData, jwres) {
+            if (jwres.error) {
+                console.log(jwres.statusCode); // => e.g. 403
+                return;
+            }
+
+            console.log(jwres); // => e.g. 200
+        }
+    );
+
+    io.socket.request(
+        {
+            method: "get",
+            url: "/api/v1/all-user/chat/test/subscribe-group/" + userId + "/" + groupId,
+            headers: {
+                Authorization:
+                    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTksImlhdCI6MTcyNzg1MTU1NiwiZXhwIjoxNzU5Mzg3NTU2fQ.PRoqyqm5Gjwv2r1zoReDdMDaYFP0oWa3oOOZkNJFVsA",
+                "x-token": "3db2abf3-d36f-46d5-a172-c0de32724f94",
+            },
+        },
+        function (resData, jwres) {
+            if (jwres.error) {
+                console.log(jwres); // => e.g. 403
+                return;
+            }
+
+            console.log(jwres); // => e.g. 200
+        }
+    );
+
+
+    // io.socket.get("/api/v1/chat/subscribe-user", function (body, res) {
+    //   console.log(res);
+    // });
+
+    io.socket.on("getMessage", function (responseData) {
+        console.log("Response Data :::", responseData);
+    });
+
+    io.socket.on("user", function (responseData) {
+        console.log("Response Data :::", responseData);
+    });
+
+    io.socket.on("message", function (responseData) {
+        console.log("Response Data :::", responseData);
+    });
+
+    io.socket.on("greeting", function (responseData) {
+        console.log("Response Data :::", responseData);
+    });
+</script>
+
+<body>
+    <center>
+        <p>Socket demo testing</p>
+    </center>
+</body>
+
+<!-- <script>
+        io.sails.headers = {
+            "Authorization": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjksImlhdCI6MTU4MzQ3MzQ5MCwiZXhwIjoxNjE1MDA5NDkwfQ.2t6WHZ_XVQUe2lrz2mLmD31N13M2t-FxEjHcrAzgvYY"
+        };
+        io.socket.get('/api/v1/user/unsubscribe-user',
+            {
+                userId: 16,
+            }, function (responseData) {
+                console.log(responseData);
+            });
+    </script> -->
+
+</html>

@@ -1,0 +1,129 @@
+<% if (userRecord && userRecord.id) { %>
+    <form id="userForm" method="POST" action="/admin/artist/update/<%= userRecord.id %>" enctype="multipart/form-data">
+        <% } else { %>
+            <form id="userForm" method="POST" action="/admin/artist/create" enctype="multipart/form-data">
+                <% } %>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Name</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="name"
+                                value="<% if (userRecord.name) { %><%= userRecord.name %><% } %>" />
+                        </div>
+                    </div>
+                    <div id="editablePart" style="display: none">
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Email</label>
+                            <div class="col-sm-10">
+                                <input type="email" class="form-control" name="email"
+                                    value="<% if (userRecord.email) { %><%= userRecord.email %><% } %>" />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Country Code</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control" name="countryCode"
+                                    value="<% if (userRecord.countryCode) { %><%= userRecord.countryCode %><% } %>" />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Phone Number</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="form-control" name="phoneNo"
+                                    value="<% if (userRecord.phoneNo) { %><%= userRecord.phoneNo %><% } %>" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Profile Picture</label>
+                        <div class="col-sm-3">
+                            <input type="file" class="form-control" name="file" />
+                            <% if (userRecord.profileImage) { %>
+                                <div style="height: 150px; width: 150px; margin-top: 15px;">
+                                    <img src="<%= userRecord?.profileImage %>"
+                                        onerror="this.src='https://placehold.co/150x150?text=Profile&font=roboto'"
+                                        style="height: 100%; width: 100%;" />
+                                </div>
+                                <% } %>
+                        </div>
+                    </div>
+
+                    <div class="hr-line-dashed"></div>
+                    <div class="form-group row">
+                        <div class="col-sm-4 col-sm-offset-2">
+                            <a href="/admin/artist" class="btn btn-white btn-sm">Cancel</a>
+                            <button class="btn btn-primary btn-sm" type="submit">
+                                Save changes
+                            </button>
+                        </div>
+                    </div>
+            </form>
+
+            <% if(req.session.flash) { %>
+                <script type="text/javascript">
+                    $(document).ready(function () {
+                        toastrDisplay(
+                            "<%= req.session.flash.type %>",
+                            "<%= req.session.flash.message %>"
+                        );
+                    });
+                </script>
+                <% req.session.flash={}; %>
+                    <% }%>
+
+                        <script>
+                            $(document).ready(function () {
+                                const id = "<%= userRecord.id %>";
+
+                                if (id) {
+                                    document.getElementById("editablePart").style.display = "none";
+                                }
+
+                                $.validator.addMethod(
+                                    "regex",
+                                    function (value, element, regexpr) {
+                                        return regexpr.test(value);
+                                    },
+                                    "Please enter a valid value."
+                                );
+                                const countryCodePattern = /^\+(\d{1}\-)?(\d{1,3})$/;
+                                const phonePattern = /^[0-9]*$/;
+                                var validator = $("#userForm").validate({
+                                    rules: {
+                                        name: { required: true },
+                                        email: {
+                                            required: true,
+                                            email: true,
+                                        },
+                                        countryCode: {
+                                            required: true,
+                                            regex: countryCodePattern,
+                                        },
+                                        phoneNo: {
+                                            required: true,
+                                            regex: phonePattern,
+                                            minlength: 8,
+                                        },
+                                    },
+                                    messages: {
+                                        name: { required: "Name is required" },
+                                        email: {
+                                            required: "Email is required",
+                                            email: "Invalid email id",
+                                            remote: "Email address already exist",
+                                        },
+                                        countryCode: {
+                                            required: "Country code is required",
+                                            regex: "example: +123 allowed",
+                                        },
+                                        phoneNo: {
+                                            required: "Phone number is required",
+                                            regex: "only number is allowed",
+                                        },
+                                    },
+                                });
+                            });
+                        </script>
+    </form>

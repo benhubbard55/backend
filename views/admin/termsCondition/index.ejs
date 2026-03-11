@@ -1,0 +1,102 @@
+<% block('title', 'Terms & Conditions' ); %>
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-10">
+            <h2>Terms & Conditions</h2>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/admin/dashboard">Dashboard</a>
+                </li>
+                <li class="breadcrumb-item active">
+                    <strong>Terms & Conditions</strong>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>Terms & Conditions</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <!-- <a href="/admin/termsCondition/create">
+                            <i class="fa fa-plus"></i>
+                        </a> -->
+                        </div>
+                    </div>
+
+                    <div class="ibox-content">
+                        <div class="table-responsive">
+                            <table id="termDatatable" class="table table-striped table-bordered table-hover"
+                                style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Description</th>
+                                        <th style="width: 20%;">Action</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <% if(req.session.flash) { %>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                toastrDisplay("<%= req.session.flash.type %>", "<%= req.session.flash.message %>");
+            });
+        </script>
+        <% req.session.flash={}; %>
+            <% }%>
+
+                <script type="text/javascript">
+                    $(document).ready(function () {
+                        var termTable = $("#termDatatable").DataTable({
+                            processing: true,
+                            serverSide: true,
+                            responsive: true,
+                            ajax: "/admin/termsCondition/index",
+                            columns: [
+                                {
+                                    data: "description",
+                                    name: "Description",
+                                    defaultContent: "<i>Not Set</i>",
+                                    render: function (data) {
+                                        var str = data
+                                        return `<div class="modernWay">${str}</div>`;
+                                    },
+                                },
+                                {
+                                    data: null,
+                                    name: "Action",
+                                    sortable: false,
+                                    searchable: false,
+                                    render: function (data) {
+                                        return (
+                                            //  ""
+                                            "<a href='/admin/termsCondition/show/" + data.id + "' class='btn btn-primary btn-sm'><i class='fa fa-eye'></i></a><a href='/admin/termsCondition/edit/" +
+                                            data.id +
+                                            "' class='btn btn-primary btn-sm ml-lg-1'><i class='fa fa-edit'></i></a>"
+                                        );
+                                    },
+                                },
+                            ],
+                        });
+                    });
+                </script>
+                <style>
+                    .modernWay {
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        display: -webkit-box;
+                        -webkit-line-clamp: 2;
+                        line-clamp: 2;
+                        -webkit-box-orient: vertical;
+                    }
+                </style>

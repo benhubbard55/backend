@@ -1,0 +1,189 @@
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        <ul class="nav metismenu" id="side-menu">
+            <li class="nav-header">
+                <div class="dropdown profile-element">
+                    <img alt="image" class="rounded-circle" src="/admin/images/profile_small.jpg" />
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <span class="block m-t-xs font-bold" id="adminDetails">
+                            <!-- <%= (req.session && req.session.admin) ? req.session.admin.firstName + ' ' +
+                                req.session.admin.lastName : '' %> -->
+                        </span>
+                        <span class="text-muted text-xs block">Admin <b class="caret"></b></span>
+                    </a>
+                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                        <li>
+                            <a id="profile" class="dropdown-item">Profile</a>
+                        </li>
+                        <li class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="/admin/logout">Logout</a></li>
+                    </ul>
+                </div>
+                <div class="logo-element">
+                    <%= sails.config.shortName %>
+                </div>
+            </li>
+
+            <!-- Dashboard -->
+            <li class="<%= (['/admin/dashboard'].includes(req.path)) ? 'active' : req.path %>">
+                <a href="/admin/dashboard">
+                    <i class="fa fa-tachometer"></i>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+            </li>
+
+            <!-- Admin -->
+            <li
+                class="<%= (['/admin/admins','/admin/create','/admin/edit/' + req.params['adminId']].includes(req.path)) ? 'active' : req.path %>">
+                <a href="/admin/admins">
+                    <i class="fa fa-users"></i>
+                    <span class="nav-label">Admins</span>
+                </a>
+            </li>
+
+            <!-- User -->
+            <li
+                class="<%= (['/admin/users','/admin/user/create','/admin/user/edit/' + req.params['userId'],'/admin/user/show/' + req.params['userId']].includes(req.path)) ? 'active' : req.path %>">
+                <a href="/admin/users">
+                    <i class="fa fa-user"></i>
+                    <span class="nav-label">Users</span>
+                </a>
+            </li>
+
+            <!-- Artist -->
+            <!-- <li
+                class="<%= (['/admin/artist','/admin/artist/create','/admin/artist/edit/' + req.params['artistId'],'/admin/artist/show/' + req.params['artistId']].includes(req.path)) ? 'active' : req.path %>">
+                <a href="/admin/artist">
+                    <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                    <span class="nav-label">Artist</span>
+                </a>
+            </li> -->
+
+            <!-- Earning -->
+            <li
+                class="<%= (['/admin/earning','/admin/earning/index','/admin/earning/show/' + req.params['musicId']].includes(req.path)) ? 'active' : req.path %>">
+                <a href="/admin/earning">
+                    <i class="fa fa-usd" aria-hidden="true"></i>
+                    <span class="nav-label">Earning</span>
+                </a>
+            </li>
+
+            <!-- Music Type -->
+            <li
+                class="<%= (['/admin/music-type','/admin/music-type/create','/admin/music-type/edit/' + req.params['musicTypeId']].includes(req.path)) ? 'active' : req.path %>">
+                <a href="/admin/music-type">
+                    <i class="fa fa-file-audio-o" aria-hidden="true"></i>
+                    <span class="nav-label">Music Type</span>
+                </a>
+            </li>
+
+            <!-- Music -->
+            <li
+                class="<%= (['/admin/music','/admin/music/create','/admin/music/edit/' + req.params['musicId'],'/admin/music/show/' + req.params['musicId'],'/admin/music-purchase','/admin/music-purchase/index','/admin/music-purchase/show/' + req.params['musicId'],'/admin/music-download','/admin/music-download/index','/admin/music-download/show/' + req.params['musicId']].includes(req.path)) ? 'active' : req.path %>">
+                <a href="#">
+                    <span class="nav-label">Music</span> <span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level collapse">
+                    <li
+                        class="<%= (['/admin/music','/admin/music/create','/admin/music/edit/' + req.params['musicId'],'/admin/music/show/' + req.params['musicId']].includes(req.path)) ? 'active' : req.path %>">
+                        <a href="/admin/music">
+                            <i class="fa fa-music" aria-hidden="true"></i>
+                            <span class="nav-label">Music</span>
+                        </a>
+                    </li>
+                    <li
+                        class="<%= (['/admin/music-purchase','/admin/music-purchase/index','/admin/music-purchase/show/' + req.params['musicId']].includes(req.path)) ? 'active' : req.path %>">
+                        <a href="/admin/music-purchase">
+                            <i class="fa fa-money" aria-hidden="true"></i>
+                            <span class="nav-label">Music Purchase</span>
+                        </a>
+                    </li>
+                    <li
+                        class="<%= (['/admin/music-download','/admin/music-download/index','/admin/music-download/show/' + req.params['musicId']].includes(req.path)) ? 'active' : req.path %>">
+                        <a href="/admin/music-download">
+                            <i class="fa fa-download" aria-hidden="true"></i>
+                            <span class="nav-label">Music Download</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- Commissions -->
+            <li class="<%= (['/admin/payment-setting'].includes(req.path)) ? 'active' : req.path %>">
+                <a href="/admin/payment-setting">
+                    <i class="fa fa-sliders" aria-hidden="true"></i>
+                    <span class="nav-label">Payment Settings</span>
+                </a>
+            </li>
+            <li class="<%= (['/admin/block-user'].includes(req.path)) ? 'active' : req.path %>">
+                <a href="/admin/block-user">
+                    <i class="fa fa-ban" aria-hidden="true"></i>
+                    <span class="nav-label">Block User</span>
+                </a>
+            </li>
+            <li class="<%= (['/admin/report-user'].includes(req.path)) ? 'active' : req.path %>">
+                <a href="/admin/report-user">
+                    <i class="fa fa-warning" aria-hidden="true"></i>
+                    <span class="nav-label">Reported User</span>
+                </a>
+            </li>
+
+
+            <!-- Terms And Policy -->
+            <li
+                class="<%= (['/admin/policy','/admin/policy/create','/admin/policy/edit/' + req.params['policyId'],'/admin/terms','/admin/termsCondition/create','/admin/termsCondition/edit/' + req.params['termId'],'/admin/termsCondition/show/'+req.params['id'],'/admin/policy/show/'+req.params['id']].includes(req.path)) ? 'active' : req.path %>">
+                <a href="#">
+                    <span class="nav-label">Documents</span> <span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level collapse">
+                    <li
+                        class="<%= (['/admin/policy','/admin/policy/create','/admin/policy/edit/' + req.params['policyId'],'/admin/policy/show/'+req.params['id']].includes(req.path)) ? 'active' : req.path %>">
+                        <a href="/admin/policy">
+                            <i class="fa fa-bookmark"></i>
+                            <span class="nav-label">Policy </span>
+                        </a>
+                    </li>
+                    <li
+                        class="<%= (['/admin/terms','/admin/termsCondition/create','/admin/termsCondition/edit/' + req.params['termId'],'/admin/termsCondition/show/'+req.params['id']].includes(req.path)) ? 'active' : req.path %>">
+                        <a href="/admin/terms">
+                            <i class="fa fa-bookmark"></i>
+                            <span class="nav-label">Terms & Conditions </span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+
+            <!-- Broadcast -->
+            <li
+                class="<%= (['/admin/broadcast','/admin/broadcast/create','/admin/broadcast/edit/' + req.params['musicTypeId']].includes(req.path)) ? 'active' : req.path %>">
+                <a href="/admin/broadcast">
+                    <i class="fa fa-bullhorn" aria-hidden="true"></i>
+                    <span class="nav-label">Broadcast</span>
+                </a>
+            </li>
+
+
+            <!-- Inquiry -->
+            <li
+                class="<%= (['/admin/inquiry','/admin/inquiry/create','/admin/inquiry/edit/' + req.params['musicTypeId']].includes(req.path)) ? 'active' : req.path %>">
+                <a href="/admin/inquiry">
+                    <i class="fa fa-file-text" aria-hidden="true"></i>
+                    <span class="nav-label">Inquiries</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: "GET",
+            url: "/admin/get-details",
+
+            success: function (data, status, xhr) {
+                console.log("dat;a: ", data);
+                $("#adminDetails").append(`${data?.firstName} ${data?.lastName}`);
+                $("#profile").attr("href", `/admin/edit/${data?.id}`);
+            },
+        });
+    });
+</script>

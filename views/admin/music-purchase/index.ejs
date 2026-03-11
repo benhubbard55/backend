@@ -1,0 +1,192 @@
+<% block('title', 'Music Purchase' ); %>
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-10">
+            <h2>Music Purchase</h2>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/admin/dashboard">Dashboard</a>
+                </li>
+                <li class="breadcrumb-item active">
+                    <strong>Music Purchase</strong>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>Music Purchase</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <!-- <a href="/admin/music/create"><i class="fa fa-plus"></i> </a> -->
+                        </div>
+                    </div>
+
+                    <div class="ibox-content">
+                        <div class="table-responsive">
+                            <table id="userDatatable" class="table table-striped table-bordered table-hover"
+                                style="width: 100%">
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Transfer Type</th>
+                                        <th>Music Name</th>
+                                        <th>Buyer name</th>
+                                        <th>Amount</th>
+                                        <th>Tax</th>
+                                        <th>Total Amount</th>
+                                        <th>Time</th>
+                                        <!-- <th>Total Download</th>
+                                        <th>Total Purchase</th>
+                                        <th>Action</th> -->
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <% if(req.session.flash) { %>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                toastrDisplay(
+                    "<%= req.session.flash.type %>",
+                    "<%= req.session.flash.message %>"
+                );
+            });
+        </script>
+        <% req.session.flash={}; %>
+            <% }%>
+
+                <script type="text/javascript">
+                    $(document).ready(function () {
+                        var userTable = $("#userDatatable").DataTable({
+                            processing: true,
+                            serverSide: true,
+                            responsive: true,
+                            ajax: "/admin/music-purchase/index",
+                            'columnDefs': [
+                                { 'visible': false, 'targets': [0, 1] }
+                            ],
+                            searching: false,
+                            order: [[6, 'desc']],
+                            columns: [
+                                {
+                                    data: "id",
+                                    name: "Id",
+                                    searchable: false,
+                                    sortable: true,
+                                },
+                                {
+                                    data: "transferType",
+                                    name: "Transfer Type",
+                                    searchable: true,
+                                    sortable: true,
+                                },
+                                {
+                                    data: "musicId.title",
+                                    name: "Music Name",
+                                    searchable: false,
+                                    sortable: false,
+                                    // render: function (data) {
+                                    //     console.log('data :>> ', data);
+                                    //     return (`<a href="/admin/artist/show/${data.id}" class="href">${data.name}</a>`)
+                                    // }
+                                },
+                                {
+                                    data: "receiverId.name",
+                                    name: "Buyer Name",
+                                    searchable: true,
+                                    sortable: true,
+                                    defaultContent: "<i>Not Set</i>",
+                                },
+                                {
+                                    data: "amount",
+                                    name: "Amount",
+                                    sortable: false,
+                                    searchable: false,
+                                    defaultContent: "0",
+                                },
+                                {
+                                    data: "tax",
+                                    name: "Tax",
+                                    sortable: false,
+                                    searchable: false,
+                                    defaultContent: "0",
+                                },
+                                {
+                                    data: "totalAmount",
+                                    name: "Total Amount",
+                                    sortable: false,
+                                    searchable: false,
+                                    defaultContent: "0",
+                                },
+                                {
+                                    data: "createdAt",
+                                    name: "Time",
+                                    sortable: true,
+                                    searchable: false,
+                                    render: function (data) {
+                                        const utcDate = new Date(data);
+
+                                        const date = new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
+                                        const day = String(date.getDate()).padStart(2, '0');
+                                        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+                                        const year = date.getFullYear();
+
+                                        const hours = String(date.getHours()).padStart(2, '0');
+                                        const minutes = String(date.getMinutes()).padStart(2, '0');
+                                        return `${day}/${month}/${year} ${hours}:${minutes}`;
+                                    }
+                                }
+                                // {    
+                                //     data: "likeCount",
+                                //     name: "Total Likes",
+                                //     sortable: false,
+                                //     searchable: false,
+                                //     defaultContent: "<i>Not Set</i>",
+                                // },
+                                // {
+                                //     data: "downloadCount",
+                                //     name: "Total Download",
+                                //     sortable: false,
+                                //     searchable: false,
+                                //     defaultContent: "<i>Not Set</i>",
+                                // },
+                                // {
+                                //     data: "purchaseCount",
+                                //     name: "Total Purchase",
+                                //     sortable: false,
+                                //     searchable: false,
+                                //     defaultContent: "<i>Not Set</i>",
+                                // },
+                                // {
+                                //     data: null,
+                                //     name: "Action",
+                                //     sortable: false,
+                                //     searchable: false,
+                                //     render: function (data) {
+                                //         return (
+                                //             "<a href='/admin/music/show/" +
+                                //             data.id +
+                                //             "' class='btn btn-primary btn-sm'><i class='fa fa-eye'></i></a>   <a href='/admin/music/edit/" + data.id + "' class='btn btn-info btn-sm'><i class='fa fa-edit'></i></i></a>"
+                                //         );
+                                //     },
+                                // },
+                            ],
+                        });
+
+                        $(document).on("click", ".music_type_remove", function () {
+                            var id = $(this).attr("id");
+                            var url = "/admin/music/" + id;
+                            deleteRecordByAjax(url, "music", userTable);
+                        });
+                    });
+                </script>

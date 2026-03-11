@@ -1,0 +1,207 @@
+<% if (musicRecord && musicRecord.id) { %>
+    <form id="userForm" method="POST" action="/admin/music/update/<%= musicRecord.id %>" enctype="multipart/form-data">
+        <% } else { %>
+            <form id="userForm" method="POST" action="/admin/music/create" enctype="multipart/form-data">
+                <% } %>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Title</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="title"
+                                value="<%= musicRecord.title || '' %>" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Description</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="description"
+                                value="<%= musicRecord.description || '' %>" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Genre Type</label>
+                        <div class="col-sm-10">
+                            <select id="musicTypeId" class="form-control" name="musicTypeId"></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Music Free/Paid</label>
+                        <div class="col-sm-10">
+                            <input type="hidden" id="isPremium" name="isPremium"
+                                value="<%= musicRecord.isPremium ? 'true' : 'false' %>" />
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="isActiveSwitch"
+                                    onchange="toggleAmountField()" <% if (musicRecord.isPremium) { %> checked <% } %>>
+                                    <label class="custom-control-label" for="isActiveSwitch"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="amountFieldContainer" class="form-group row <%= musicRecord.isPremium ? '' : 'd-none' %>">
+                        <label class="col-sm-2 col-form-label">Amount</label>
+                        <div class="col-sm-10">
+                            <input type="number" min="1" id="amountField" class="form-control" name="amount"
+                                value="<%= musicRecord.amount || 0 %>" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Music File Type</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="fileType"
+                                value="<%= musicRecord.fileType || '' %>" />
+                        </div>
+                    </div>
+
+                    <!-- <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Minutes</label>
+                            <div class="col-sm-10">
+                                <input type="number" class="form-control" name="minutes"
+                                    value="<%= musicRecord.minutes || 0 %>" />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Second</label>
+                            <div class="col-sm-10">
+                                <input type="number" class="form-control" name="seconds"
+                                    value="<%= musicRecord.seconds || 0 %>" />
+                            </div>
+                        </div> -->
+
+                    <% if (musicRecord.musicFileName) { %>
+                        <div class="col-sm-12">
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">Music</label>
+                                <div class="col-sm-10 col-form-label">
+                                    <audio controls>
+                                        <source src="<%= musicRecord.musicFileName %>" type="audio/mpeg">
+                                    </audio>
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
+
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">Music Profile</label>
+                                <div class="col-sm-3">
+                                    <input type="file" class="form-control" name="musicProfile" />
+                                    <% if (musicRecord.profileImage) { %>
+                                        <div style="height: 150px; width: 150px; margin-top: 15px;">
+                                            <img src="<%= musicRecord?.profileImage %>"
+                                                onerror="this.src='https://placehold.co/150x150?text=Profile&font=roboto'"
+                                                style="height: 100%; width: 100%;" />
+                                        </div>
+                                        <% } %>
+                                </div>
+                            </div>
+
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group row">
+                                <div class="col-sm-4 col-sm-offset-2">
+                                    <a href="/admin/music" class="btn btn-white btn-sm">Cancel</a>
+                                    <button class="btn btn-primary btn-sm" type="submit">
+                                        Save changes
+                                    </button>
+                                </div>
+                            </div>
+            </form>
+
+            <% if(req.session.flash) { %>
+                <script type="text/javascript">
+                    $(document).ready(function () {
+                        toastrDisplay(
+                            "<%= req.session.flash.type %>",
+                            "<%= req.session.flash.message %>"
+                        );
+                    });
+                </script>
+                <% req.session.flash={}; %>
+                    <% } %>
+
+                        <script>
+                            function onChange(params) {
+                                const val = document.getElementById("isActiveSwitch").checked;
+                                document.getElementById("isPremium").value = val;
+                            }
+
+                            $(document).ready(function () {
+                                $("#role").select2({ multiple: true, placeholder: "Select Role" });
+
+                                var validator = $("#userForm").validate({
+                                    rules: {
+                                        title: {
+                                            required: true,
+                                        },
+                                        description: {
+                                            required: true,
+                                        },
+                                        musicTypeId: {
+                                            required: true,
+                                        },
+                                        isPremium: {
+                                            required: false,
+                                        },
+                                        amount: {
+                                            required: true,
+                                        },
+                                    },
+                                    messages: {
+                                        title: { required: "Title is required" },
+                                        description: { required: "description is required" },
+                                        musicTypeId: { required: "Music type is required" },
+                                        isPremium: { required: "isPremium is required" },
+                                        amount: { required: "Amount is required" },
+                                    },
+                                });
+
+                                $.ajax({
+                                    type: "GET",
+                                    url: "/admin/music-type/list",
+                                    success: function (data, status, xhr) {
+                                        $("#musicTypeId").append(`
+                                                <option selected disabled>select</option>
+                                            `);
+                                        data?.musicType?.map((list) => {
+                                            $("#musicTypeId").append(`
+                                                <option value="${list.id}" ${list.id == "<%= musicRecord.musicTypeId %>" ? "selected" : ""
+                                                }>${list.genreName}</option>
+                                            `);
+                                        });
+                                    },
+                                });
+                            });
+                        </script>
+
+                        <script>
+                            function toggleAmountField() {
+                                const isPremiumChecked = document.getElementById("isActiveSwitch").checked;
+                                const isPremiumField = document.getElementById("isPremium");
+                                const amountFieldContainer = document.getElementById("amountFieldContainer");
+                                const amountField = document.getElementById("amountField");
+                                isPremiumField.value = isPremiumChecked;
+
+                                if (isPremiumChecked) {
+                                    amountFieldContainer.classList.remove("d-none");
+                                    $("#amountField").rules("add", {
+                                        required: true,
+                                        min: 1,
+                                        messages: {
+                                            required: "Amount is required for paid music",
+                                            min: "Amount must be greater than 0",
+                                        },
+                                    });
+                                } else {
+                                    amountFieldContainer.classList.add("d-none");
+                                    amountField.value = 0;
+                                    $("#amountField").rules("remove", "required");
+                                    $("#amountField").rules("remove", "min");
+                                }
+                            }
+                            document.addEventListener("DOMContentLoaded", function () {
+                                toggleAmountField();
+                            });
+                        </script>
+    </form>

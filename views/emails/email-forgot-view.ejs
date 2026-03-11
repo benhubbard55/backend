@@ -1,0 +1,270 @@
+<% block('title', 'Forgot password' ); %>
+
+    <style>
+        .form-container {
+            background: rgb(63, 29, 94);
+            background: radial-gradient(circle,
+                    rgba(63, 29, 94, 1) 0%,
+                    rgba(13, 12, 13, 1) 98%);
+            max-width: 100%;
+            height: 100%;
+            margin: 0;
+        }
+
+        .row {
+            justify-content: center;
+            flex-wrap: nowrap;
+        }
+
+        .col-lg-12 {
+            max-width: 450px;
+        }
+
+        .title-div {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            width: 100%;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        @media (max-width: 640px) {
+            .form-container {
+                padding: 50px 30px;
+                height: 100vh;
+                border-radius: 0;
+                width: 100%;
+            }
+        }
+
+        h2 {
+            color: #fff;
+        }
+
+        input {
+            width: auto;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .form-control::placeholder {
+            color: #bbb;
+        }
+
+        .form-group i {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            color: #b9afaf;
+        }
+
+        .form-group .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #fff;
+        }
+
+        .btn {
+            background: #ab19ff;
+            border: none;
+            padding: 10px 15px;
+            margin-top: 20px;
+            width: 70%;
+            border-radius: 50px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #ab19ff;
+        }
+
+        .link {
+            display: block;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .link:hover {
+            text-decoration: underline;
+        }
+
+        .footer-text {
+            color: #bbb;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .password-container input {
+            width: 100%;
+            padding-right: 30px;
+            padding-left: 10px;
+        }
+
+        .eye-confirm,
+        .eye-pass {
+            position: absolute;
+            right: 45px;
+            top: 20px;
+            /* transform: translateY(-50%); */
+            cursor: pointer;
+            color: #333;
+        }
+    </style>
+
+    <div class="passwordBox animated fadeInDown form-container">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- <div class="ibox-content"> -->
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="title-div">
+                            <div class="font-bold h2" style="color: white; justify-content: center">
+                                Forgot Password
+                            </div>
+                            <div class="h5">Reset Your Password</div>
+                        </div>
+
+                        <form class=".form-box" role="form" id="forgot-password-form" name="forgot-password-form"
+                            action="/api/v1/all-user/auth/forgot-password" method="POST">
+                            <div class="form-group password-container">
+                                <input type="password" class="form-control" name="password" id="password"
+                                    placeholder="New password" />
+                                <span class="eye-pass" onclick="togglePassword()"><i class="fa fa-eye"></i></span>
+                            </div>
+                            <small id="passwordHelp" style="color: red" class="form-text"></small>
+
+                            <div class="form-group">
+                                <input type="hidden" class="form-control" name="verificationToken"
+                                    id="verificationToken" value="<%= req.params.verificationToken %>" />
+                            </div>
+
+                            <div class="form-group password-container">
+                                <input type="password" class="form-control" name="confirmPassword" id="confirmPassword"
+                                    placeholder="Confirm password" />
+                                <span class="eye-confirm" onclick="togglePasswordConfirm()"><i
+                                        class="fa fa-eye"></i></span>
+                            </div>
+                            <small id="confirmPasswordHelp" style="color: red" class="form-text"></small>
+
+                            <button type="submit" id="btnOk" class="btn btn-primary block full-width m-b">
+                                Save new password
+                            </button>
+                        </form>
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-6">Copyright <%= sails.config.siteName %>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <small>© <%= sails.config.copyRightYear %></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- </div> -->
+            </div>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"
+        integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.21.0/jquery.validate.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.validator.addMethod(
+                "regex",
+                function (value, element, regexpr) {
+                    return regexpr.test(value);
+                },
+                "Please enter a valid value."
+            );
+            const passwordPattern =
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            var validator = $("#forgot-password-form").validate({
+                rules: {
+                    password: {
+                        required: true,
+                        regex: passwordPattern,
+                    },
+                    confirmPassword: {
+                        required: true,
+                        regex: passwordPattern,
+                        equalTo: "#password",
+                    },
+                },
+                messages: {
+                    password: {
+                        required: "Password is required",
+                        regex:
+                            "Password must be at least 8 characters long and include one uppercase letter, one lowercase letter, one digit, and one special character.",
+                    },
+                    confirmPassword: {
+                        required: "Confirm password is required",
+                        regex:
+                            "Password must be at least 8 characters long and include one uppercase letter, one lowercase letter, one digit, and one special character.",
+                        equalTo: "Confirm passwords not match.",
+                    },
+                },
+                submitHandler: function (form) {
+                    $('#btnOk').attr('disabled', true);
+                    form.submit();
+                }
+            });
+        });
+
+        function togglePassword() {
+            const passwordField = document.getElementById("password");
+            const eyeIcon = document.querySelector(".eye-pass i");
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordField.type = "password";
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            }
+        }
+
+        function togglePasswordConfirm() {
+            const passwordField = document.getElementById("confirmPassword");
+            const eyeIcon = document.querySelector(".eye-confirm i");
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordField.type = "password";
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            }
+        }
+    </script>
